@@ -1,0 +1,428 @@
+class Program
+{
+    static void Main()
+    {
+        // Приклад використання
+        var warehouse = new Warehouse();
+        warehouse.AddNewProduct("Товар1", "шт.", 100, 10.5, 5, 2, 10, 20);
+        warehouse.AddNewProduct("Товар2", "кг", 50, 8.0, 2, 0, 5, 15);
+
+        Console.WriteLine("Список товарів на складі:");
+        foreach (var product in warehouse)
+        {
+            Console.WriteLine(product);
+        }
+
+        using System;
+        using System.Collections;
+        using System.Collections.Generic;
+
+public class Product
+    {
+        private string name;
+        private string unit;
+        private int quantity;
+        private double pricePerUnit;
+
+        public Product(string name, string unit, int quantity, double pricePerUnit)
+        {
+            this.name = name;
+            this.unit = unit;
+            this.quantity = quantity;
+            this.pricePerUnit = pricePerUnit;
+        }
+
+        public Product(Product other)
+        {
+            this.name = other.name;
+            this.unit = other.unit;
+            this.quantity = other.quantity;
+            this.pricePerUnit = other.pricePerUnit;
+        }
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        public string Unit
+        {
+            get { return unit; }
+            set { unit = value; }
+        }
+
+        public int Quantity
+        {
+            get { return quantity; }
+            set { quantity = value; }
+        }
+
+        public double PricePerUnit
+        {
+            get { return pricePerUnit; }
+            set
+            {
+                if (value > 0)
+                {
+                    pricePerUnit = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Ціна одиниці товару має бути більшою за нуль");
+                }
+            }
+        }
+
+        public void IncreaseQuantity(int amount)
+        {
+            quantity += amount;
+        }
+
+        public void DecreaseQuantity(int amount)
+        {
+            if (quantity - amount >= 0)
+            {
+                quantity -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Неможливо зменшити кількість товару нижче нуля");
+            }
+        }
+
+        public void IncreasePricePerUnit(double amount)
+        {
+            if (pricePerUnit + amount > 0)
+            {
+                pricePerUnit += amount;
+            }
+            else
+            {
+                throw new ArgumentException("Неможливо збільшити ціну одиниці товару нижче нуля");
+            }
+        }
+
+        public void DecreasePricePerUnit(double amount)
+        {
+            if (pricePerUnit - amount > 0)
+            {
+                pricePerUnit -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Неможливо зменшити ціну одиниці товару нижче нуля");
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"Назва: {Name}, Одиниця: {Unit}, Кількість: {Quantity}, Ціна за одиницю: {PricePerUnit}";
+        }
+    }
+
+    public class Warehouse : IEnumerable<Product>
+    {
+        private List<Product> products;
+
+        public Warehouse()
+        {
+            products = new List<Product>();
+        }
+
+        public Warehouse(IEnumerable<Product> initialProducts)
+        {
+            products = new List<Product>(initialProducts);
+        }
+
+        public void AddNewProduct(string name, string unit, int quantity, double pricePerUnit, int reserved, int damaged, int outOfStock, int ordered)
+        {
+            var newProduct = new WarehouseProduct(name, unit, quantity, pricePerUnit, reserved, damaged, outOfStock, ordered);
+            products.Add(newProduct);
+        }
+
+        public IEnumerator<Product> GetEnumerator()
+        {
+            return products.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return string.Join("\n", products);
+        }
+    }
+
+    public class WarehouseProduct : Product
+    {
+        private int reserved;
+        private int damaged;
+        private int outOfStock;
+        private int ordered;
+
+        public WarehouseProduct(string name, string unit, int quantity, double pricePerUnit, int reserved, int damaged, int outOfStock, int ordered)
+            : base(name, unit, quantity, pricePerUnit)
+        {
+            this.reserved = reserved;
+            this.damaged = damaged;
+            this.outOfStock = outOfStock;
+            this.ordered = ordered;
+        }
+
+        public WarehouseProduct(WarehouseProduct other)
+            : base(other)
+        {
+            this.reserved = other.reserved;
+            this.damaged = other.damaged;
+            this.outOfStock = other.outOfStock;
+            this.ordered = other.ordered;
+        }
+
+        public int Reserved
+        {
+            get { return reserved; }
+            set { reserved = value; }
+        }
+
+        public int Damaged
+        {
+            get { return damaged; }
+            set { damaged = value; }
+        }
+
+        public int OutOfStock
+        {
+            get { return outOfStock; }
+            set { outOfStock = value; }
+        }
+
+        public int Ordered
+        {
+            get { return ordered; }
+            set { ordered = value; }
+        }
+
+        public void IncreaseReserved(int amount)
+        {
+            reserved += amount;
+        }
+
+        public void DecreaseReserved(int amount)
+        {
+            if (reserved - amount >= 0)
+            {
+                reserved -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Неможливо зменшити зарезервовану кількість товару нижче нуля");
+            }
+        }
+
+        public void IncreaseDamaged(int amount)
+        {
+            damaged += amount;
+        }
+
+        public void DecreaseDamaged(int amount)
+        {
+            if (damaged - amount >= 0)
+            {
+                damaged -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Неможливо зменшити кількість пошкодженого товару нижче нуля");
+            }
+        }
+
+        public void IncreaseOrdered(int amount)
+        {
+            ordered += amount;
+        }
+
+        public void DecreaseOrdered(int amount)
+        {
+            if (ordered - amount >= 0)
+            {
+                ordered -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Неможливо зменшити кількість замовленого товару нижче нуля");
+            }
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + $", Зарезервовано: {reserved}, Пошкоджено: {damaged}, Відсутнє на складі: {outOfStock}, Замовлено: {ordered}";
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            // Приклад використання
+            var warehouse = new Warehouse();
+            warehouse.AddNewProduct("Товар1", "шт.", 100, 10.5, 5, 2, 10, 20);
+            warehouse.AddNewProduct("Товар2", "кг", 50, 8.0, 2, 0, 5, 15);
+
+            Console.WriteLine("Список товарів на складі:");
+            foreach (var product in warehouse)
+            {
+                Console.WriteLine(product);
+            }
+        class Program
+        {
+            static void Main()
+            {
+                static void Main()
+                {
+                    // Приклад використання
+                    var warehouse = new Warehouse();
+                    warehouse.AddNewProduct("Товар1", "шт.", 100, 10.5, 5, 2, 10, 20);
+                    warehouse.AddNewProduct("Товар2", "кг", 50, 8.0, 2, 0, 5, 15);
+
+                    Console.WriteLine("Список товарів на складі:");
+                    foreach (var product in warehouse)
+                    {
+                        Console.WriteLine(product);
+                    }
+
+                    // Вставте наведений код тут
+                    var random = new Random();
+                    var products = new List<Product>
+        {
+            new WarehouseProduct("Товар3", "м", 30, 15.0, 8, 3, 2, 10),
+            new WarehouseProduct("Товар4", "л", 20, 7.5, 4, 1, 8, 5),
+            // Додайте ще продукти за необхідності
+        };
+
+                    warehouse = new Warehouse(products);
+
+                    Console.WriteLine("\nОновлений список товарів на складі:");
+                    foreach (var product in warehouse)
+                    {
+                        Console.WriteLine(product);
+                    }
+
+                    try
+                    {
+                        // Приклад видачі частини товарів
+                        var issuedProduct = warehouse[0]; // Отримуємо перший продукт зі складу
+                        Console.WriteLine($"\nВидано товар: {issuedProduct}");
+
+                        // Перевірка зміненої кількості товарів на складі
+                        Console.WriteLine("\nОновлений список товарів на складі після видачі:");
+                        foreach (var product in warehouse)
+                        {
+                            Console.WriteLine(product);
+                        }
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"Помилка: {ex.Message}");
+                    }
+                }
+
+            }
+        }
+        {
+        var warehouse = new Warehouse();
+        var random = new Random();
+
+        // Додайте початкові продукти
+        warehouse.AddNewProduct("Товар1", "шт.", 100, 10.5, 5, 2, 10, 20);
+        warehouse.AddNewProduct("Товар2", "кг", 50, 8.0, 2, 0, 5, 15);
+
+        Console.WriteLine("Список товарів на складі:");
+        foreach (var product in warehouse)
+        {
+            Console.WriteLine(product);
+        }
+
+    // Додайте код користувацького інтерфейсу тут
+    Console.WriteLine("\nОберіть опцію:");
+        Console.WriteLine("1. Додати новий продукт");
+        Console.WriteLine("2. Показати список товарів");
+        Console.WriteLine("3. Видати товар");
+        Console.WriteLine("0. Вийти");
+
+        while (true)
+        {
+            Console.Write("Введіть номер опції: ");
+            string input = Console.ReadLine();
+
+            switch (input)
+            {
+                case "1":
+                    // Логіка додавання нового продукту
+                    Console.WriteLine("Введіть дані для нового продукту:");
+                    // Отримання введених даних та виклик методу для додавання продукту
+                    break;
+
+                case "2":
+                    // Виведення списку товарів
+                    Console.WriteLine("\nСписок товарів на складі:");
+                    foreach (var product in warehouse)
+                    {
+                        Console.WriteLine(product);
+                    }
+break;
+
+                case "3":
+    // Логіка видачі товару
+    Console.WriteLine("Введіть дані для видачі товару:");
+    // Отримання введених даних та виклик методу для видачі товару
+    break;
+
+case "0":
+    // Вихід з програми
+    return;
+
+default:
+    Console.WriteLine("Невірний вибір. Спробуйте ще раз.");
+    break;
+}
+        }
+    }
+        var random = new Random();
+var products = new List<Product>
+        {
+            new WarehouseProduct("Товар3", "м", 30, 15.0, 8, 3, 2, 10),
+            new WarehouseProduct("Товар4", "л", 20, 7.5, 4, 1, 8, 5),
+            // Додайте ще продукти за необхідності
+        };
+
+warehouse = new Warehouse(products);
+
+Console.WriteLine("\nОновлений список товарів на складі:");
+foreach (var product in warehouse)
+{
+    Console.WriteLine(product);
+}
+
+try
+{
+    // Приклад видачі частини товарів
+    var issuedProduct = warehouse[0]; // Отримуємо перший продукт зі складу
+    Console.WriteLine($"\nВидано товар: {issuedProduct}");
+
+    // Перевірка зміненої кількості товарів на складі
+    Console.WriteLine("\nОновлений список товарів на складі після видачі:");
+    foreach (var product in warehouse)
+    {
+        Console.WriteLine(product);
+    }
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine($"Помилка: {ex.Message}");
+}
+    }
+}
